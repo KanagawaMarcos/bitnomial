@@ -14,7 +14,7 @@ type Trade = {
         | Bid
         | Ask
 
-type ProductReport = {
+type Market = {
     vwap: float
     volume: uint32
 }
