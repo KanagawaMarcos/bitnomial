@@ -2,11 +2,6 @@
 #r "./libs/FParsecCS.dll"
 #r "nuget: FSharp.Data"
 
-
-open System
-
-let input = Console.In.ReadToEnd()
-
 type Trade = {
     MakerAccountId: string
     TakerAccountId: string
