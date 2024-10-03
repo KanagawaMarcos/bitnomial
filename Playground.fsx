@@ -36,3 +36,19 @@ let pCsvLine =
               Quantity = qty })
 
  
+let pLedger = many pCsvLine
+let parse trades =
+    match run pLedger trades with
+    | Success(result, _, _) -> result
+    | Failure(errorMsg, _, _) -> failwith errorMsg
+    
+let csv = """
+Tyrell Corp A123,Wayland-Yutani Corp BC32,BUSU1,Bid,42,10
+CHOAM Arakis Z23,OPEC 897,BUIZ1,Ask,-2,14
+InGen Tech BCZ232,BioSynFG332,BUSM2,Bid,43250,23
+"""
+
+let parsedTrades = parse csv
+
+parsedTrades |> List.iter (fun trade ->
+    printfn $"MakerAccountId: %s{trade.MakerAccountId}, TakerAccountId: %s{trade.TakerAccountId}, Symbol: %s{trade.Symbol}, Side: %A{trade.Side}, Price: %d{trade.Price}, Quantity: %d{trade.Quantity}")
