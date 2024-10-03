@@ -32,8 +32,8 @@ let pCsvLine =
 
  
 let pLedger = many pCsvLine
-let parse trades =
-    match run pLedger trades with
+let parse log =
+    match run pLedger log with
     | Success(result, _, _) -> result
     | Failure(errorMsg, _, _) -> failwith errorMsg
     
@@ -43,7 +43,7 @@ CHOAM Arakis Z23,OPEC 897,BUIZ1,Ask,-2,14
 InGen Tech BCZ232,BioSynFG332,BUSM2,Bid,43250,23
 """
 
-let parsedTrades = parse csv
+let trades = parse csv
 
-parsedTrades |> List.iter (fun trade ->
+trades |> List.iter (fun trade ->
     printfn $"MakerAccountId: %s{trade.MakerAccountId}, TakerAccountId: %s{trade.TakerAccountId}, Symbol: %s{trade.Symbol}, Side: %A{trade.Side}, Price: %d{trade.Price}, Quantity: %d{trade.Quantity}")
