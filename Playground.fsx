@@ -20,5 +20,20 @@ type Market = {
 }
 
 open FParsec
+let pCsvContent = manyChars (noneOf [','; '\n'; '\r'])
+let pCsvValue : Parser<string,unit> = pCsvContent .>> (pchar ',')
+let pLastCsvValue : Parser<string,unit> = pCsvContent .>> optional (pchar ',')
+let pTakerSide : Parser<Side, unit> = (pstringCI "Bid" >>% Bid) <|> (pstringCI "Ask" >>% Ask) .>> pchar ','
+let pPrice = pint64 .>> pchar ','
+let pQuantity = puint32 .>> optional (pchar ',')
+let pCsvLine =
+        pCsvValue .>>. pCsvValue .>>. pCsvValue .>>. pTakerSide .>>. pPrice .>>. pQuantity
+        |>> (fun (((((maker, taker), symbol), side), price), qty) ->
+            { MakerAccountId = maker
+              TakerAccountId = taker
+              Symbol = symbol
+              Side = side
+              Price = price
+              Quantity = qty })
 
-let pTakerSide : Parser<Side, unit> = (pstringCI "Bid" >>% Bid) <|> (pstringCI "Ask" >>% Ask)
+ 
