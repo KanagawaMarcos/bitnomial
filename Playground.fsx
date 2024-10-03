@@ -13,16 +13,13 @@ type Trade = {
     Side =
         | Bid
         | Ask
-
+    
 open FParsec
 let pCsvContent : Parser<string,unit> = manyChars (noneOf [','; '\n'; '\r'])
-let pCsvValue : Parser<string,unit> = pCsvContent .>> pchar ','
+let pCsvValue : Parser<string,unit> = pCsvContent .>> optional (pchar ',')
 let pTakerSide : Parser<Side, unit> = (pstringCI "Bid" >>% Bid) <|> (pstringCI "Ask" >>% Ask) .>> pchar ','
 let pPrice : Parser<int64, unit> = pint64 .>> pchar ','
-
-let pNewlineOrEof : Parser<unit, unit> = (newline >>% ()) <|> eof
-let pQuantity : Parser<uint32, unit> = puint32 .>> pNewlineOrEof
-
+let pQuantity : Parser<uint32, unit> = puint32 .>> optional (pchar '\n' <|> pchar '\r')
 let pCsvLine =
         pCsvValue .>>. pCsvValue .>>. pCsvValue .>>. pTakerSide .>>. pPrice .>>. pQuantity
         |>> (fun (((((maker, taker), symbol), side), price), qty) ->
@@ -33,12 +30,13 @@ let pCsvLine =
               Price = price
               Quantity = qty })
 
+ 
 let pLedger = many pCsvLine
 let parse log =
     match run pLedger log with
     | Success(result, _, _) -> result
     | Failure(errorMsg, _, _) -> failwith errorMsg
-
+    
 let csv = """Tyrell Corp A123,Wayland-Yutani Corp BC32,BUSU1,Bid,42,10
 CHOAM Arakis Z23,OPEC 897,BUIZ1,Ask,-2,14
 InGen Tech BCZ232,BioSynFG332,BUSM2,Bid,43250,23"""
