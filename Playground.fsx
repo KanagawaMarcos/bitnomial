@@ -7,8 +7,6 @@ open System
 
 let input = Console.In.ReadToEnd()
 
-type Side = Bid | Ask
-
 type Trade = {
     MakerAccountId: string
     TakerAccountId: string
@@ -16,7 +14,10 @@ type Trade = {
     Side: Side
     Price: int64
     Quantity: uint32
-}
+} and
+    Side =
+        | Bid
+        | Ask
 
 type ProductReport = {
     vwap: float
@@ -24,3 +25,5 @@ type ProductReport = {
 }
 
 open FParsec
+
+let pTakerSide : Parser<Side, unit> = (pstringCI "Bid" >>% Bid) <|> (pstringCI "Ask" >>% Ask)
