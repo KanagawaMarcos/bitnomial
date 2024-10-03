@@ -13,18 +13,13 @@ type Trade = {
     Side =
         | Bid
         | Ask
-
-type Market = {
-    vwap: float
-    volume: uint32
-}
-
+    
 open FParsec
-let pCsvContent = manyChars (noneOf [','; '\n'; '\r'])
-let pCsvValue : Parser<string,unit> = pCsvContent .>> (pchar ',')
+let pCsvContent : Parser<string,unit> = manyChars (noneOf [','; '\n'; '\r'])
+let pCsvValue : Parser<string,unit> = pCsvContent .>> optional (pchar ',')
 let pTakerSide : Parser<Side, unit> = (pstringCI "Bid" >>% Bid) <|> (pstringCI "Ask" >>% Ask) .>> pchar ','
-let pPrice = pint64 .>> pchar ','
-let pQuantity = puint32 .>> optional (pchar ',')
+let pPrice : Parser<int64, unit> = pint64 .>> pchar ','
+let pQuantity : Parser<uint32, unit> = puint32 .>> optional (pchar '\n' <|> pchar '\r')
 let pCsvLine =
         pCsvValue .>>. pCsvValue .>>. pCsvValue .>>. pTakerSide .>>. pPrice .>>. pQuantity
         |>> (fun (((((maker, taker), symbol), side), price), qty) ->
