@@ -54,9 +54,9 @@ let calculate trades =
     )
     |> Map.ofSeq
     
-let output aggregatedData =
+let output data =
     let json = 
-        aggregatedData
+        data
         |> Map.toSeq
         |> Seq.map (fun (symbol, report) ->
             symbol, 
