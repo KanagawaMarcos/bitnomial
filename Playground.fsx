@@ -39,11 +39,9 @@ let parse log =
     | Success(result, _, _) -> result
     | Failure(errorMsg, _, _) -> failwith errorMsg
 
-let csv = """
-Tyrell Corp A123,Wayland-Yutani Corp BC32,BUSU1,Bid,42,10
+let csv = """Tyrell Corp A123,Wayland-Yutani Corp BC32,BUSU1,Bid,42,10
 CHOAM Arakis Z23,OPEC 897,BUIZ1,Ask,-2,14
-InGen Tech BCZ232,BioSynFG332,BUSM2,Bid,43250,23
-"""
+InGen Tech BCZ232,BioSynFG332,BUSM2,Bid,43250,23"""
 
 let trades = parse csv
 
