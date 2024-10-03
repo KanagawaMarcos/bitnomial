@@ -14,9 +14,13 @@
         <Compile Include="Program.fs"/>
     </ItemGroup>
     <ItemGroup>
+        <None Include="Playground.fsx" />
         <None Include="web.config" CopyToOutputDirectory="PreserveNewest"/>
         <Content Include="WebRoot\**\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="libs\FParsec.dll" />
     </ItemGroup>
 </Project>
